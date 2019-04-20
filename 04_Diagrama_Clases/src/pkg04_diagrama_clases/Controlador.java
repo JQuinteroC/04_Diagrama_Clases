@@ -3,6 +3,7 @@ package pkg04_diagrama_clases;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -134,8 +135,11 @@ public class Controlador extends Exception implements ActionListener {
                     if (nClases != 0) {
                         for (int i = 0; i < nClases; i++) {
                             // Variables de control
-                            clases.add(null);
+                            clases temClass = new clases();
+                            clases.add(temClass);
                             String temporal[] = new String[0];
+                            atrib.clear();
+                            met.clear();
                             int numSpaces[] = new int[0];
                             try { // Intenta hacer la clase
                                 // <editor-fold defaultstate="collapsed" desc="Nombre y parametros"> 
@@ -152,7 +156,7 @@ public class Controlador extends Exception implements ActionListener {
                                             temporal[j] = temporal[j].replace("abstract", "");
                                             if (!nombres.contains(temporal[j])) {
                                                 nombres.add(temporal[j]);
-                                                clases.get(i).setNombre(temporal[j]);
+                                                clases.get(i).setNombre("abstract class " + temporal[j]);
                                                 clases.get(i).setCreada(true);
                                                 clases.get(i).setTipo(1);
                                             } else {
@@ -164,7 +168,7 @@ public class Controlador extends Exception implements ActionListener {
                                             temporal[j] = temporal[j].replace("class", "");
                                             if (!nombres.contains(temporal[j])) {
                                                 nombres.add(temporal[j]);
-                                                clases.get(i).setNombre(temporal[j]);
+                                                clases.get(i).setNombre("class " + temporal[j]);
                                                 clases.get(i).setCreada(true);
                                                 clases.get(i).setTipo(0);
                                             } else {
@@ -176,7 +180,7 @@ public class Controlador extends Exception implements ActionListener {
                                             temporal[j] = temporal[j].replace("interface", "");
                                             if (!nombres.contains(temporal[j])) {
                                                 nombres.add(temporal[j]);
-                                                clases.get(i).setNombre(temporal[j]);
+                                                clases.get(i).setNombre("interface " + temporal[j]);
                                                 clases.get(i).setCreada(true);
                                                 clases.get(i).setTipo(2);
                                             } else {
@@ -186,11 +190,11 @@ public class Controlador extends Exception implements ActionListener {
                                             }
                                         } else if (clases.get(i).isCreada()) { // Atributos
                                             if (temporal[j].contains("public")) {
-                                                agregarAtrib(temporal, nombres, atrib, "public", i);
+                                                agregarAtrib(temporal, nombres, atrib, "public", i, j);
                                             } else if (temporal[j].contains("private")) {
-                                                agregarAtrib(temporal, nombres, atrib, "private", i);
+                                                agregarAtrib(temporal, nombres, atrib, "private", i, j);
                                             } else if (temporal[j].contains("protected")) {
-                                                agregarAtrib(temporal, nombres, atrib, "protected", i);
+                                                agregarAtrib(temporal, nombres, atrib, "protected", i, j);
                                             } else {
                                                 JOptionPane.showMessageDialog(null, "ERROR en atributo sin definición de acceso", "Error atributo", JOptionPane.ERROR_MESSAGE);
                                                 clases.get(i).setCreada(false);
@@ -259,7 +263,7 @@ public class Controlador extends Exception implements ActionListener {
                                 if (clases.get(i).isCreada()) {
                                     // Crear clase en componente ////////////////////////////////////////////////////////////////////////////////////////////////////
                                 }
-                            } catch (Exception ex) {
+                            } catch (HeadlessException ex) {
                                 clases.get(i).setCreada(false);
                                 break;
                             }
@@ -295,43 +299,46 @@ public class Controlador extends Exception implements ActionListener {
         clases.get(localizador).setMetodos(metodos);
     }
 
-    private void agregarAtrib(String[] tem, ArrayList<String> nom, ArrayList<String> atributos, String discriminante, int pos) {
+    private void agregarAtrib(String[] tem, ArrayList<String> nom, ArrayList<String> atributos, String discriminante, int posC, int pos) {
         String dis = "";
-        
+
         if (null == discriminante) {
             JOptionPane.showMessageDialog(null, "ERROR en atributo sin definición de acceso", "Error atributo", JOptionPane.ERROR_MESSAGE);
-            clases.get(pos).setCreada(false);
-        } else switch (discriminante) {
-            case "public":
-                dis = "+";
-                break;
-            case "private":
-                dis = "-";
-                break;
-            case "protected":
-                dis = "#";
-                break;
-            default:
-                JOptionPane.showMessageDialog(null, "ERROR en atributo sin definición de acceso", "Error atributo", JOptionPane.ERROR_MESSAGE);
-                clases.get(pos).setCreada(false);
-                break;
+            clases.get(posC).setCreada(false);
+        } else {
+            switch (discriminante) {
+                case "public":
+                    dis = "+";
+                    break;
+                case "private":
+                    dis = "-";
+                    break;
+                case "protected":
+                    dis = "#";
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(null, "ERROR en atributo sin definición de acceso", "Error atributo", JOptionPane.ERROR_MESSAGE);
+                    clases.get(posC).setCreada(false);
+                    break;
+            }
         }
 
         tem[pos] = tem[pos].replace(discriminante, "");
         if (tem[pos].contains("new")) {
             tem[pos] = tem[pos].replace("new", "");
-            if (nom.contains(tem[pos])) {
+            String nombre = tem[pos].replace("[]", "");
+            if (nom.contains(nombre)) {
                 atributos.add(dis + " new " + tem[pos]);
                 // Ingresar composicion y  agregación /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             } else {
                 JOptionPane.showMessageDialog(null, "ERROR en composición o agregación", "Error atributo", JOptionPane.ERROR_MESSAGE);
-                clases.get(pos).setCreada(false);
+                clases.get(posC).setCreada(false);
             }
         } else if (!atributos.contains(tem[pos])) {
             atributos.add(dis + " " + tem[pos]);
         } else {
             JOptionPane.showMessageDialog(null, "ERROR dos atributos o más con el mismo nombre", "Error atributo", JOptionPane.ERROR_MESSAGE);
-            clases.get(pos).setCreada(false);
+            clases.get(posC).setCreada(false);
         }
     }
 }
