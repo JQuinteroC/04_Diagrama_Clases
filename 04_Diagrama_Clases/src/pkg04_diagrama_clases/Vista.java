@@ -25,6 +25,7 @@ public class Vista extends JFrame {
 
     JLabel lblTitulo = new JLabel("Diagramas UML");
     JLabel lblEtiquetas [][];
+    JLabel lblImgReferecia = new javax.swing.JLabel();
     // Imagenes de relaciones
     JLabel lblRelaciones [];
     // Botones
@@ -44,18 +45,21 @@ public class Vista extends JFrame {
     void mostrar() {
         // Titulo
         lblTitulo.setFont(new java.awt.Font("Verdana", 1, 25));
-        lblTitulo.setBounds(330, 5, 220, 45);
+        lblTitulo.setBounds(240, 5, 220, 45);
+        // Imagen referencia
+        lblImgReferecia.setIcon(new javax.swing.ImageIcon("C:\\Users\\jose0\\Desktop\\imgReferencia.png"));
+        lblImgReferecia.setBounds(10, 490, 670, 175);
         // Botones
-        btnClase.setBounds(150, 50, 150, 30);
-        btnHerencia.setBounds(350, 50, 150, 30);
-        btnGenerar.setBounds(550, 50, 150, 30);
+        btnClase.setBounds(75, 50, 150, 30);
+        btnHerencia.setBounds(275, 50, 150, 30);
+        btnGenerar.setBounds(475, 50, 150, 30);
         // ScrollPane
         spClases.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Clases", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Verdana", 0, 11)));
-        spClases.setBounds(20, 90, 845, 250);
+        spClases.setBounds(10, 90, 675, 400);
         spDiagrama.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Diagrama", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Verdana", 0, 11)));
-        spDiagrama.setBounds(20, 350, 845, 300);
+        spDiagrama.setBounds(685, 10, 660, 660);
         
-        setSize(900, 700);
+        setSize(1350, 710);     //Ajustar X según pantalla
         setLocationRelativeTo(null);
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -72,6 +76,7 @@ public class Vista extends JFrame {
         c.add(btnGenerar);
         c.add(spClases);
         c.add(spDiagrama);
+        c.add(lblImgReferecia);
         // Crear segmento Scroll de Variables
 //        c.add(spValores);
         Container frValores = new Container();
