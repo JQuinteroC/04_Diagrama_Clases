@@ -1,5 +1,6 @@
 package pkg04_diagrama_clases;
 
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -9,8 +10,14 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -29,6 +36,7 @@ public class Controlador extends Exception implements ActionListener {
     int nRelaciones;
     int yC;
     int yD;
+    int xD;
     Container cntClases;
     Container cntDiagrama;
     ArrayList<clases> clases = new ArrayList();
@@ -54,7 +62,7 @@ public class Controlador extends Exception implements ActionListener {
 
         cntDiagrama = new Container();
         cntDiagrama.setLayout(null);
-        cntDiagrama.setPreferredSize(new Dimension(845, 300));
+        cntDiagrama.setPreferredSize(new Dimension(660, 660));
     }
 
     @Override
@@ -128,11 +136,22 @@ public class Controlador extends Exception implements ActionListener {
                     break;
                 // <editor-fold defaultstate="collapsed" desc="Generar diagrama">    
                 case "Generar diagrama":
+                    // Inicializa las variables y controladores
+                    cntDiagrama.removeAll();
+                    cntDiagrama.repaint();
+                    xD = 0;
+                    yD = 0;
                     nombres.clear();
                     clases.clear();
+                    // Definie variables
                     ArrayList<String> atrib = new ArrayList();
                     ArrayList<String> met = new ArrayList();
+                    d.EdtClase = new JTextPane[nClases];
+                    d.pnlClase = new JPanel[nClases];
+                    // Genera diagrama
                     if (nClases != 0) {
+                        cntDiagrama.removeAll();
+                        d.spDiagrama.getViewport().add(cntDiagrama);
                         for (int i = 0; i < nClases; i++) {
                             // Variables de control
                             clases temClass = new clases();
@@ -154,6 +173,13 @@ public class Controlador extends Exception implements ActionListener {
                                         if (temporal[j].contains("class") && temporal[j].contains("abstract")) {
                                             temporal[j] = temporal[j].replace("class", "");
                                             temporal[j] = temporal[j].replace("abstract", "");
+                                            // Comprueba que la clase inicie correctamente
+                                            if (!charAccept(temporal[j])) {
+                                                JOptionPane.showMessageDialog(null, "ERROR caracter invalido en nombre de clase abstracta", "Error clase", JOptionPane.ERROR_MESSAGE);
+                                                clases.get(i).setCreada(false);
+                                                break;
+                                            }
+                                            // Validad que la clase abstracta no exista anteriormente
                                             if (!nombres.contains(temporal[j])) {
                                                 nombres.add(temporal[j]);
                                                 clases.get(i).setNombre("abstract class " + temporal[j]);
@@ -162,10 +188,18 @@ public class Controlador extends Exception implements ActionListener {
                                             } else {
                                                 JOptionPane.showMessageDialog(null, "ERROR mismo nombre que otra clase", "Error clase", JOptionPane.ERROR_MESSAGE);
                                                 clases.get(i).setCreada(false);
+                                                clases.get(i).setCreada(false);
                                                 break;
                                             }
                                         } else if (temporal[j].contains("class")) {
                                             temporal[j] = temporal[j].replace("class", "");
+                                            // Comprueba que la classe inicie correctamente
+                                            if (!charAccept(temporal[j])) {
+                                                JOptionPane.showMessageDialog(null, "ERROR caracter invalido en nombre de clase", "Error clase", JOptionPane.ERROR_MESSAGE);
+                                                clases.get(i).setCreada(false);
+                                                break;
+                                            }
+                                            // Validad que la clase no exista anteriormente
                                             if (!nombres.contains(temporal[j])) {
                                                 nombres.add(temporal[j]);
                                                 clases.get(i).setNombre("class " + temporal[j]);
@@ -178,6 +212,13 @@ public class Controlador extends Exception implements ActionListener {
                                             }
                                         } else if (temporal[j].contains("interface")) {
                                             temporal[j] = temporal[j].replace("interface", "");
+                                            // Comprueba que la classe inicie correctamente
+                                            if (!charAccept(temporal[j])) {
+                                                JOptionPane.showMessageDialog(null, "ERROR caracter invalido en nombre de interface", "Error clase", JOptionPane.ERROR_MESSAGE);
+                                                clases.get(i).setCreada(false);
+                                                break;
+                                            }
+                                            // Validad que la interface no exista anteriormente
                                             if (!nombres.contains(temporal[j])) {
                                                 nombres.add(temporal[j]);
                                                 clases.get(i).setNombre("interface " + temporal[j]);
@@ -195,14 +236,13 @@ public class Controlador extends Exception implements ActionListener {
                                                 agregarAtrib(temporal, nombres, atrib, "private", i, j);
                                             } else if (temporal[j].contains("protected")) {
                                                 agregarAtrib(temporal, nombres, atrib, "protected", i, j);
-                                            } else {
+                                            } else if (temporal[j] != null) {
                                                 JOptionPane.showMessageDialog(null, "ERROR en atributo sin definición de acceso", "Error atributo", JOptionPane.ERROR_MESSAGE);
                                                 clases.get(i).setCreada(false);
                                                 break;
                                             }
                                         }
-
-                                    } else {
+                                    } else if (temporal[j] != null) {
                                         JOptionPane.showMessageDialog(null, "ERROR más espacios", "Error clase", JOptionPane.ERROR_MESSAGE);
                                         clases.get(i).setCreada(false);
                                         break;
@@ -221,7 +261,13 @@ public class Controlador extends Exception implements ActionListener {
                                             if (temporal[j].contains("public")) {
                                                 temporal[j] = temporal[j].replace("public", "");
                                                 if (!met.contains(temporal[j])) {
-                                                    met.add("+ " + temporal[j]);
+                                                    // Comprueba que la clase inicie correctamente
+                                                    if (!charAccept(temporal[j].replace("()", ""))) {
+                                                        JOptionPane.showMessageDialog(null, "ERROR caracter invalido en nombre de un atributo", "Error clase", JOptionPane.ERROR_MESSAGE);
+                                                        clases.get(i).setCreada(false);
+                                                    } else {
+                                                        met.add("+ " + temporal[j]);
+                                                    }
                                                 } else {
                                                     JOptionPane.showMessageDialog(null, "ERROR dos metodos o más con el mismo nombre", "Error metodos", JOptionPane.ERROR_MESSAGE);
                                                     clases.get(i).setCreada(false);
@@ -230,7 +276,13 @@ public class Controlador extends Exception implements ActionListener {
                                             } else if (temporal[j].contains("private")) {
                                                 temporal[j] = temporal[j].replace("private", "");
                                                 if (!met.contains(temporal[j])) {
-                                                    met.add("- " + temporal[j]);
+                                                    // Comprueba que la clase inicie correctamente
+                                                    if (!charAccept(temporal[j].replace("()", ""))) {
+                                                        JOptionPane.showMessageDialog(null, "ERROR caracter invalido en nombre de un atributo", "Error clase", JOptionPane.ERROR_MESSAGE);
+                                                        clases.get(i).setCreada(false);
+                                                    } else {
+                                                        met.add("- " + temporal[j]);
+                                                    }
                                                 } else {
                                                     JOptionPane.showMessageDialog(null, "ERROR dos metodos o más con el mismo nombre", "Error metodos", JOptionPane.ERROR_MESSAGE);
                                                     clases.get(i).setCreada(false);
@@ -239,19 +291,25 @@ public class Controlador extends Exception implements ActionListener {
                                             } else if (temporal[j].contains("protected")) {
                                                 temporal[j] = temporal[j].replace("protected", "");
                                                 if (!met.contains(temporal[j])) {
-                                                    met.add("# " + temporal[j]);
+                                                    // Comprueba que la clase inicie correctamente
+                                                    if (!charAccept(temporal[j].replace("()", ""))) {
+                                                        JOptionPane.showMessageDialog(null, "ERROR caracter invalido en nombre de un atributo", "Error clase", JOptionPane.ERROR_MESSAGE);
+                                                        clases.get(i).setCreada(false);
+                                                    } else {
+                                                        met.add("# " + temporal[j]);
+                                                    }
                                                 } else {
                                                     JOptionPane.showMessageDialog(null, "ERROR dos metodos o más con el mismo nombre", "Error metodos", JOptionPane.ERROR_MESSAGE);
                                                     clases.get(i).setCreada(false);
                                                     break;
                                                 }
-                                            } else {
+                                            } else if (!temporal[j].isEmpty()) {
                                                 JOptionPane.showMessageDialog(null, "ERROR en metodos sin definición de acceso", "Error metodos", JOptionPane.ERROR_MESSAGE);
                                                 clases.get(i).setCreada(false);
                                                 break;
                                             }
 
-                                        } else {
+                                        } else if (temporal[j] != "") {
                                             JOptionPane.showMessageDialog(null, "ERROR más espacios", "Error metodos", JOptionPane.ERROR_MESSAGE);
                                             clases.get(i).setCreada(false);
                                             break;
@@ -260,9 +318,44 @@ public class Controlador extends Exception implements ActionListener {
                                 }
                                 ingresarMetodos(met, clases, i);
                                 // </editor-fold>
+
+                                // <editor-fold defaultstate="collapsed" desc="Diagrama"> 
+
+                                d.EdtClase[i] = new JTextPane();
+                                d.EdtClase[i].setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+                                d.EdtClase[i].setMargin(new java.awt.Insets(5, 5, 5, 5));
+
+                                d.pnlClase[i] = new JPanel();
+                                d.pnlClase[i].add(d.EdtClase[i]);
                                 if (clases.get(i).isCreada()) {
-                                    // Crear clase en componente ////////////////////////////////////////////////////////////////////////////////////////////////////
+                                    // <editor-fold defaultstate="collapsed" desc="Clases"> 
+                                    Modelo md = new Modelo();
+                                    md.dibujarClases(i, d, clases, cntDiagrama, xD, yD);
+                                    xD = md.xD;
+                                    yD = md.yD;
+                                    // </editor-fold>
+
+                                    // <editor-fold defaultstate="collapsed" desc="Composición"> 
+                                    // </editor-fold>
+                                    // <editor-fold defaultstate="collapsed" desc="Agregación"> 
+                                    // </editor-fold>
+                                    // <editor-fold defaultstate="collapsed" desc="Carinalidad"> 
+                                    // </editor-fold>
+                                    // <editor-fold defaultstate="collapsed" desc="Herencia"> 
+                                    // </editor-fold>
+                                    // <editor-fold defaultstate="collapsed" desc="Realización"> 
+                                    // </editor-fold>
+                                } else {
+                                    JLabel lblError = new JLabel("No se pudo crear la clase #" + (i + 1));
+                                    cntDiagrama.add(lblError);
+                                    lblError.setBounds(15 + xD, 10, 150, 25);
+                                    cntDiagrama.setPreferredSize(new Dimension(xD + 200, 40 + yD));
+
+                                    d.spDiagrama.getViewport().add(cntDiagrama);
+
+                                    i = nClases;
                                 }
+                                // </editor-fold>
                             } catch (HeadlessException ex) {
                                 clases.get(i).setCreada(false);
                                 break;
@@ -273,7 +366,7 @@ public class Controlador extends Exception implements ActionListener {
                     }
 
                     for (int i = 0; i < nRelaciones; i++) {
-
+                        // Crear relaciones ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     }
                     // </editor-fold>
                     break;
@@ -299,6 +392,16 @@ public class Controlador extends Exception implements ActionListener {
         clases.get(localizador).setMetodos(metodos);
     }
 
+    /**
+     * Guarda los atributos en sus tres diferentes tipos
+     *
+     * @param tem
+     * @param nom
+     * @param atributos
+     * @param discriminante
+     * @param posC
+     * @param pos
+     */
     private void agregarAtrib(String[] tem, ArrayList<String> nom, ArrayList<String> atributos, String discriminante, int posC, int pos) {
         String dis = "";
 
@@ -327,18 +430,127 @@ public class Controlador extends Exception implements ActionListener {
         if (tem[pos].contains("new")) {
             tem[pos] = tem[pos].replace("new", "");
             String nombre = tem[pos].replace("[]", "");
-            if (nom.contains(nombre)) {
-                atributos.add(dis + " new " + tem[pos]);
-                // Ingresar composicion y  agregación /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            } else {
-                JOptionPane.showMessageDialog(null, "ERROR en composición o agregación", "Error atributo", JOptionPane.ERROR_MESSAGE);
+            // Comprueba que la clase inicie correctamente
+            if (!charAccept(tem[pos])) {
+                JOptionPane.showMessageDialog(null, "ERROR caracter invalido en nombre de un atributo", "Error clase", JOptionPane.ERROR_MESSAGE);
                 clases.get(posC).setCreada(false);
+            } else {
+                if (nom.contains(nombre)) {
+                    atributos.add(dis + " new " + tem[pos]);
+                    if (tem[pos].contains("[]")) { // Agregación
+                        // dimensión de las agregaciones
+                        int dimension = clases.get(posC).getAgregacion().length + 1;
+                        // declaración del arreglo de agregaciones
+                        String temAgre[] = new String[dimension];
+                        // Ingreso de las anteriores agregaciones
+                        for (int i = 0; i < (dimension - 1); i++) {
+                            temAgre[i] = clases.get(posC).getPosAgregacion(i);
+                        }
+                        // Ingreso de la ultima agregación
+                        temAgre[dimension - 1] = tem[pos];
+                        // Asignación de la nueva lista de agregación
+                        clases.get(posC).setAgregacion(temAgre);
+                    } else { // Composición
+                        // dimensión de las composición
+                        int dimension = clases.get(posC).getComposicion().length + 1;
+                        // declaración del arreglo de composiciones
+                        String temComp[] = new String[dimension];
+                        // Ingreso de las anteriores composiciones
+                        for (int i = 0; i < (dimension - 1); i++) {
+                            temComp[i] = clases.get(posC).getPosComposicion(i);
+                        }
+                        // Ingreso de la ultima composición
+                        temComp[dimension - 1] = tem[pos];
+                        // Asignación de la nueva lista de composición
+                        clases.get(posC).setComposicion(temComp);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "ERROR en composición o agregación", "Error atributo", JOptionPane.ERROR_MESSAGE);
+                    clases.get(posC).setCreada(false);
+                }
             }
         } else if (!atributos.contains(tem[pos])) {
-            atributos.add(dis + " " + tem[pos]);
+            // Comprueba que la clase inicie correctamente
+            if (!charAccept(tem[pos])) {
+                JOptionPane.showMessageDialog(null, "ERROR caracter invalido en nombre de un atributo", "Error clase", JOptionPane.ERROR_MESSAGE);
+                clases.get(posC).setCreada(false);
+            } else {
+                atributos.add(dis + " " + tem[pos]);
+            }
         } else {
             JOptionPane.showMessageDialog(null, "ERROR dos atributos o más con el mismo nombre", "Error atributo", JOptionPane.ERROR_MESSAGE);
             clases.get(posC).setCreada(false);
         }
+    }
+
+    /**
+     * Ingresa el texto al panel de texto
+     *
+     * @param tp
+     * @param msg
+     * @param c
+     */
+    public void appendToPane(JTextPane tp, String msg, Color c) {
+        StyleContext sc = StyleContext.getDefaultStyleContext();
+        AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, c);
+
+        aset = sc.addAttribute(aset, StyleConstants.FontFamily, "Lucida Console");
+
+        int len = tp.getDocument().getLength();
+        tp.setCaretPosition(len);
+        tp.setCharacterAttributes(aset, false);
+        tp.replaceSelection(msg);
+    }
+
+    /**
+     * Regresa la mayor cantidad de caracteres de una clase, del nombre,
+     * atributos o metodos
+     *
+     * @param cl
+     * @return
+     */
+    public int mayorCaracter(clases cl) {
+        int cNombre = cl.getNombre().length();
+        int cAtrib = -1;
+        int cMet = -1;
+
+        for (int j = 0; j < cl.atributos.length; j++) {
+            if (cl.getAtributos(j).length() > cAtrib) {
+                cAtrib = cl.getAtributos(j).length();
+            }
+        }
+
+        for (int j = 0; j < cl.metodos.length; j++) {
+            if (cl.getMetodos(j).length() > cMet) {
+                cMet = cl.getMetodos(j).length();
+            }
+        }
+
+        if (cNombre > cAtrib && cNombre > cMet) {
+            return cNombre;
+        } else if (cAtrib > cNombre && cAtrib > cMet) {
+            return cAtrib;
+        }
+        return cMet;
+    }
+
+    /**
+     * Valida si el nombre tiene caracteres aceptados
+     *
+     * @param palabra
+     * @return
+     */
+    public boolean charAccept(String palabra) {
+        for (int i = 0; i < palabra.length(); i++) {
+            if (!Character.isLetter(palabra.charAt(i))) {
+                char dis = '_';
+                if (i == 0 && Character.isDigit(palabra.charAt(i))) {
+                    return false;
+                } else if (dis != palabra.charAt(i) && !Character.isDigit(palabra.charAt(i))) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

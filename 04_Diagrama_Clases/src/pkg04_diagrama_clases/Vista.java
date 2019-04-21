@@ -8,9 +8,11 @@ import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -37,7 +39,8 @@ public class Vista extends JFrame {
     JTextArea txtMetodo [];
     JTextField txtRelacion[];
     // Estructura de la imagen
-    JEditorPane EdtClase [];
+    JTextPane EdtClase [];
+    JPanel pnlClase[];
     // Secciones de clases y diagrama
     JScrollPane spClases = new JScrollPane();
     JScrollPane spDiagrama = new JScrollPane();
@@ -47,7 +50,7 @@ public class Vista extends JFrame {
         lblTitulo.setFont(new java.awt.Font("Verdana", 1, 25));
         lblTitulo.setBounds(240, 5, 220, 45);
         // Imagen referencia
-        lblImgReferecia.setIcon(new javax.swing.ImageIcon("C:\\Users\\jose0\\Desktop\\imgReferencia.png"));
+        lblImgReferecia.setIcon(new javax.swing.ImageIcon("src\\imgReferencia.png"));
         lblImgReferecia.setBounds(10, 490, 670, 175);
         // Botones
         btnClase.setBounds(75, 50, 150, 30);
@@ -77,17 +80,10 @@ public class Vista extends JFrame {
         c.add(spClases);
         c.add(spDiagrama);
         c.add(lblImgReferecia);
-        // Crear segmento Scroll de Variables
-//        c.add(spValores);
+        
         Container frValores = new Container();
         frValores.setLayout(null);
         frValores.setPreferredSize(new Dimension(700, 45));
-//        spValores.getViewport().add(frValores);
-        
-        // Ingresar componentes a Scroll de Variables
-//        frValores.add(txtNumVar);
-       // frValores.add(btnCrearCampos);
-
     }
 
     void asignaOyentes(Controlador c) {
