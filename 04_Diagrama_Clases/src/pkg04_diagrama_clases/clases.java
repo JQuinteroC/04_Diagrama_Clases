@@ -7,7 +7,7 @@ package pkg04_diagrama_clases;
 
 /**
  *
- * @author JQuintero
+ * @author <a href="https://github.com/JQuinteroC">JQuinteroC</a>
  */
 public class clases {
 

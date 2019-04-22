@@ -1,9 +1,9 @@
 package pkg04_diagrama_clases;
 
-
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
+import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
@@ -26,25 +26,25 @@ import javax.swing.JTextPane;
 public class Vista extends JFrame {
 
     JLabel lblTitulo = new JLabel("Diagramas UML");
-    JLabel lblEtiquetas [][];
+    JLabel lblEtiquetas[][];
     JLabel lblImgReferecia = new javax.swing.JLabel();
     // Imagenes de relaciones
-    JLabel lblRelaciones [];
+    JLabel lblRelaciones[];
     // Botones
     JButton btnClase = new JButton("Crear clase");
     JButton btnHerencia = new JButton("Crear herencia");
     JButton btnGenerar = new JButton("Generar diagrama");
     // Campos de llenado
-    JTextArea txtClase [];
-    JTextArea txtMetodo [];
+    JTextArea txtClase[];
+    JTextArea txtMetodo[];
     JTextField txtRelacion[];
     // Estructura de la imagen
-    JTextPane EdtClase [];
-    JPanel pnlClase[];
+    ArrayList<JTextPane> EdtClase;
+    ArrayList<JPanel> pnlClase;
     // Secciones de clases y diagrama
     JScrollPane spClases = new JScrollPane();
     JScrollPane spDiagrama = new JScrollPane();
-    
+
     void mostrar() {
         // Titulo
         lblTitulo.setFont(new java.awt.Font("Verdana", 1, 25));
@@ -61,7 +61,7 @@ public class Vista extends JFrame {
         spClases.setBounds(10, 90, 675, 400);
         spDiagrama.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Diagrama", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Verdana", 0, 11)));
         spDiagrama.setBounds(685, 10, 660, 660);
-        
+
         setSize(1350, 710);     //Ajustar X según pantalla
         setLocationRelativeTo(null);
         setVisible(true);
@@ -80,7 +80,7 @@ public class Vista extends JFrame {
         c.add(spClases);
         c.add(spDiagrama);
         c.add(lblImgReferecia);
-        
+
         Container frValores = new Container();
         frValores.setLayout(null);
         frValores.setPreferredSize(new Dimension(700, 45));
@@ -90,6 +90,6 @@ public class Vista extends JFrame {
         btnClase.addActionListener(c);
         btnGenerar.addActionListener(c);
         btnHerencia.addActionListener(c);
-     //   btnCrearCampos.addActionListener(c);
+        //   btnCrearCampos.addActionListener(c);
     }
 }

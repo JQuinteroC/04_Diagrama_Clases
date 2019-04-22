@@ -34,6 +34,7 @@ public class Controlador extends Exception implements ActionListener {
     Modelo t;
     int nClases;
     int nRelaciones;
+    int nComAgre;
     int yC;
     int yD;
     int xD;
@@ -53,6 +54,7 @@ public class Controlador extends Exception implements ActionListener {
         // Iniciacializa varibales
         nClases = 0;
         nRelaciones = 0;
+        nComAgre = 0;
         yC = 0;
         yD = 0;
         // Definir container
@@ -137,6 +139,8 @@ public class Controlador extends Exception implements ActionListener {
                 // <editor-fold defaultstate="collapsed" desc="Generar diagrama">    
                 case "Generar diagrama":
                     // Inicializa las variables y controladores
+                    Modelo md = new Modelo();
+                    
                     cntDiagrama.removeAll();
                     cntDiagrama.repaint();
                     xD = 0;
@@ -146,8 +150,8 @@ public class Controlador extends Exception implements ActionListener {
                     // Definie variables
                     ArrayList<String> atrib = new ArrayList();
                     ArrayList<String> met = new ArrayList();
-                    d.EdtClase = new JTextPane[nClases];
-                    d.pnlClase = new JPanel[nClases];
+                    d.EdtClase = new ArrayList<>();
+                    d.pnlClase = new ArrayList<>();
                     // Genera diagrama
                     if (nClases != 0) {
                         cntDiagrama.removeAll();
@@ -320,22 +324,26 @@ public class Controlador extends Exception implements ActionListener {
                                 // </editor-fold>
 
                                 // <editor-fold defaultstate="collapsed" desc="Diagrama"> 
+                                JTextPane txt = new JTextPane();
 
-                                d.EdtClase[i] = new JTextPane();
-                                d.EdtClase[i].setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-                                d.EdtClase[i].setMargin(new java.awt.Insets(5, 5, 5, 5));
+                                txt.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+                                txt.setMargin(new java.awt.Insets(5, 5, 5, 5));
 
-                                d.pnlClase[i] = new JPanel();
-                                d.pnlClase[i].add(d.EdtClase[i]);
+                                JPanel pnl = new JPanel();
+                                pnl.add(txt);
+                                
+                                d.EdtClase.add(txt);
+                                d.pnlClase.add(pnl);
                                 if (clases.get(i).isCreada()) {
                                     // <editor-fold defaultstate="collapsed" desc="Clases"> 
-                                    Modelo md = new Modelo();
+                                    // Modelo md = new Modelo();
                                     md.dibujarClases(i, d, clases, cntDiagrama, xD, yD);
                                     xD = md.xD;
                                     yD = md.yD;
                                     // </editor-fold>
 
                                     // <editor-fold defaultstate="collapsed" desc="Composición"> 
+                                    md.dibujarComposicion(i, d, clases, nombres, cntDiagrama, xD, yD, nClases);
                                     // </editor-fold>
                                     // <editor-fold defaultstate="collapsed" desc="Agregación"> 
                                     // </editor-fold>
@@ -348,7 +356,7 @@ public class Controlador extends Exception implements ActionListener {
                                 } else {
                                     JLabel lblError = new JLabel("No se pudo crear la clase #" + (i + 1));
                                     cntDiagrama.add(lblError);
-                                    lblError.setBounds(15 + xD, 10, 150, 25);
+                                    lblError.setBounds(15 + xD, 25, 150, 25);
                                     cntDiagrama.setPreferredSize(new Dimension(xD + 200, 40 + yD));
 
                                     d.spDiagrama.getViewport().add(cntDiagrama);
@@ -431,7 +439,7 @@ public class Controlador extends Exception implements ActionListener {
             tem[pos] = tem[pos].replace("new", "");
             String nombre = tem[pos].replace("[]", "");
             // Comprueba que la clase inicie correctamente
-            if (!charAccept(tem[pos])) {
+            if (!charAccept(nombre)) {
                 JOptionPane.showMessageDialog(null, "ERROR caracter invalido en nombre de un atributo", "Error clase", JOptionPane.ERROR_MESSAGE);
                 clases.get(posC).setCreada(false);
             } else {
@@ -450,6 +458,8 @@ public class Controlador extends Exception implements ActionListener {
                         temAgre[dimension - 1] = tem[pos];
                         // Asignación de la nueva lista de agregación
                         clases.get(posC).setAgregacion(temAgre);
+
+                        nComAgre += 2;
                     } else { // Composición
                         // dimensión de las composición
                         int dimension = clases.get(posC).getComposicion().length + 1;
@@ -463,6 +473,8 @@ public class Controlador extends Exception implements ActionListener {
                         temComp[dimension - 1] = tem[pos];
                         // Asignación de la nueva lista de composición
                         clases.get(posC).setComposicion(temComp);
+
+                        nComAgre += 2;
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, "ERROR en composición o agregación", "Error atributo", JOptionPane.ERROR_MESSAGE);
