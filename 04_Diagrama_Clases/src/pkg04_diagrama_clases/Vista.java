@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.util.ArrayList;
 import javax.swing.JButton;
-import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -29,7 +28,7 @@ public class Vista extends JFrame {
     JLabel lblEtiquetas[][];
     JLabel lblImgReferecia = new javax.swing.JLabel();
     // Imagenes de relaciones
-    JLabel lblRelaciones[];
+    ArrayList<JLabel> lblRelaciones = new ArrayList<>();
     // Botones
     JButton btnClase = new JButton("Crear clase");
     JButton btnHerencia = new JButton("Crear herencia");
@@ -46,7 +45,7 @@ public class Vista extends JFrame {
     JScrollPane spDiagrama = new JScrollPane();
 
     void mostrar() {
-        // Titulo
+// Titulo
         lblTitulo.setFont(new java.awt.Font("Verdana", 1, 25));
         lblTitulo.setBounds(240, 5, 220, 45);
         // Imagen referencia
@@ -67,8 +66,8 @@ public class Vista extends JFrame {
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("Diagrama UML");
-    }
-
+        }
+        
     public Vista() throws HeadlessException {
         Container c = getContentPane();
 

@@ -34,7 +34,10 @@ public class Controlador extends Exception implements ActionListener {
     Modelo t;
     int nClases;
     int nRelaciones;
-    int nComAgre;
+    int nCom;
+    int nAgre;
+    int nHer;
+    int nRea;
     int yC;
     int yD;
     int xD;
@@ -54,7 +57,10 @@ public class Controlador extends Exception implements ActionListener {
         // Iniciacializa varibales
         nClases = 0;
         nRelaciones = 0;
-        nComAgre = 0;
+        nCom = 0;
+        nAgre = 0;
+        nHer = 0;
+        nRea = 0;
         yC = 0;
         yD = 0;
         // Definir container
@@ -140,7 +146,7 @@ public class Controlador extends Exception implements ActionListener {
                 case "Generar diagrama":
                     // Inicializa las variables y controladores
                     Modelo md = new Modelo();
-                    
+
                     cntDiagrama.removeAll();
                     cntDiagrama.repaint();
                     xD = 0;
@@ -154,7 +160,6 @@ public class Controlador extends Exception implements ActionListener {
                     d.pnlClase = new ArrayList<>();
                     // Genera diagrama
                     if (nClases != 0) {
-                        cntDiagrama.removeAll();
                         d.spDiagrama.getViewport().add(cntDiagrama);
                         for (int i = 0; i < nClases; i++) {
                             // Variables de control
@@ -240,10 +245,6 @@ public class Controlador extends Exception implements ActionListener {
                                                 agregarAtrib(temporal, nombres, atrib, "private", i, j);
                                             } else if (temporal[j].contains("protected")) {
                                                 agregarAtrib(temporal, nombres, atrib, "protected", i, j);
-                                            } else if (temporal[j] != null) {
-                                                JOptionPane.showMessageDialog(null, "ERROR en atributo sin definición de acceso", "Error atributo", JOptionPane.ERROR_MESSAGE);
-                                                clases.get(i).setCreada(false);
-                                                break;
                                             }
                                         }
                                     } else if (temporal[j] != null) {
@@ -322,52 +323,52 @@ public class Controlador extends Exception implements ActionListener {
                                 }
                                 ingresarMetodos(met, clases, i);
                                 // </editor-fold>
-
-                                // <editor-fold defaultstate="collapsed" desc="Diagrama"> 
-                                JTextPane txt = new JTextPane();
-
-                                txt.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-                                txt.setMargin(new java.awt.Insets(5, 5, 5, 5));
-
-                                JPanel pnl = new JPanel();
-                                pnl.add(txt);
-                                
-                                d.EdtClase.add(txt);
-                                d.pnlClase.add(pnl);
-                                if (clases.get(i).isCreada()) {
-                                    // <editor-fold defaultstate="collapsed" desc="Clases"> 
-                                    // Modelo md = new Modelo();
-                                    md.dibujarClases(i, d, clases, cntDiagrama, xD, yD);
-                                    xD = md.xD;
-                                    yD = md.yD;
-                                    // </editor-fold>
-
-                                    // <editor-fold defaultstate="collapsed" desc="Composición"> 
-                                    md.dibujarComposicion(i, d, clases, nombres, cntDiagrama, xD, yD, nClases);
-                                    // </editor-fold>
-                                    // <editor-fold defaultstate="collapsed" desc="Agregación"> 
-                                    // </editor-fold>
-                                    // <editor-fold defaultstate="collapsed" desc="Carinalidad"> 
-                                    // </editor-fold>
-                                    // <editor-fold defaultstate="collapsed" desc="Herencia"> 
-                                    // </editor-fold>
-                                    // <editor-fold defaultstate="collapsed" desc="Realización"> 
-                                    // </editor-fold>
-                                } else {
-                                    JLabel lblError = new JLabel("No se pudo crear la clase #" + (i + 1));
-                                    cntDiagrama.add(lblError);
-                                    lblError.setBounds(15 + xD, 25, 150, 25);
-                                    cntDiagrama.setPreferredSize(new Dimension(xD + 200, 40 + yD));
-
-                                    d.spDiagrama.getViewport().add(cntDiagrama);
-
-                                    i = nClases;
-                                }
-                                // </editor-fold>
                             } catch (HeadlessException ex) {
                                 clases.get(i).setCreada(false);
                                 break;
                             }
+
+                            // <editor-fold defaultstate="collapsed" desc="Diagrama"> 
+                            JTextPane txt = new JTextPane();
+
+                            txt.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+                            txt.setMargin(new java.awt.Insets(5, 5, 5, 5));
+
+                            JPanel pnl = new JPanel();
+                            pnl.add(txt);
+
+                            d.EdtClase.add(txt);
+                            d.pnlClase.add(pnl);
+                            if (clases.get(i).isCreada()) {
+                                // <editor-fold defaultstate="collapsed" desc="Clases"> 
+                                // Modelo md = new Modelo();
+                                md.dibujarClases(i, d, clases, cntDiagrama, xD, yD);
+                                xD = md.xD;
+                                yD = md.yD;
+                                // </editor-fold>
+
+                                // <editor-fold defaultstate="collapsed" desc="Composición"> 
+                                md.dibujarComposicion(i, d, clases, nombres, cntDiagrama, xD, yD, nClases);
+                                // </editor-fold>
+                                // <editor-fold defaultstate="collapsed" desc="Agregación"> 
+                                // </editor-fold>
+                                // <editor-fold defaultstate="collapsed" desc="Carinalidad"> 
+                                // </editor-fold>
+                                // <editor-fold defaultstate="collapsed" desc="Herencia"> 
+                                // </editor-fold>
+                                // <editor-fold defaultstate="collapsed" desc="Realización"> 
+                                // </editor-fold>
+                            } else {
+                                JLabel lblError = new JLabel("No se pudo crear la clase #" + (i + 1));
+                                cntDiagrama.add(lblError);
+                                lblError.setBounds(15 + xD, 25, 150, 25);
+                                cntDiagrama.setPreferredSize(new Dimension(xD + 200, 40 + yD));
+
+                                d.spDiagrama.getViewport().add(cntDiagrama);
+
+                                i = nClases;
+                            }
+                            // </editor-fold>
                         }
                     } else {
                         JOptionPane.showMessageDialog(null, "Debe ingresar almenos una clase para poder generar el diagrama", "Error", JOptionPane.ERROR_MESSAGE);
@@ -413,8 +414,8 @@ public class Controlador extends Exception implements ActionListener {
     private void agregarAtrib(String[] tem, ArrayList<String> nom, ArrayList<String> atributos, String discriminante, int posC, int pos) {
         String dis = "";
 
-        if (null == discriminante) {
-            JOptionPane.showMessageDialog(null, "ERROR en atributo sin definición de acceso", "Error atributo", JOptionPane.ERROR_MESSAGE);
+        if (null == discriminante && tem[pos] != null) {
+            JOptionPane.showMessageDialog(null, "ERROR en atributo sin definición de acceso6767", "Error atributo", JOptionPane.ERROR_MESSAGE);
             clases.get(posC).setCreada(false);
         } else {
             switch (discriminante) {
@@ -428,7 +429,7 @@ public class Controlador extends Exception implements ActionListener {
                     dis = "#";
                     break;
                 default:
-                    JOptionPane.showMessageDialog(null, "ERROR en atributo sin definición de acceso", "Error atributo", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "ERROR en atributo sin definición de acceso---", "Error atributo", JOptionPane.ERROR_MESSAGE);
                     clases.get(posC).setCreada(false);
                     break;
             }
@@ -459,7 +460,7 @@ public class Controlador extends Exception implements ActionListener {
                         // Asignación de la nueva lista de agregación
                         clases.get(posC).setAgregacion(temAgre);
 
-                        nComAgre += 2;
+                        nAgre++;
                     } else { // Composición
                         // dimensión de las composición
                         int dimension = clases.get(posC).getComposicion().length + 1;
@@ -474,7 +475,7 @@ public class Controlador extends Exception implements ActionListener {
                         // Asignación de la nueva lista de composición
                         clases.get(posC).setComposicion(temComp);
 
-                        nComAgre += 2;
+                        nCom++;
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, "ERROR en composición o agregación", "Error atributo", JOptionPane.ERROR_MESSAGE);
