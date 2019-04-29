@@ -22,17 +22,15 @@ public class Modelo {
     JPanel con;
     int xD;
     int yD;
-    int xComp;
+    ArrayList<DiaComp> com = new ArrayList<>();
+    int cntComp;
     int xAgreg;
 
     Modelo() {
-        xComp = 0;
+        cntComp = 0;
     }
 
     public void dibujarClases(int i, Vista d, ArrayList<clases> clases, Container cntDiagrama, int xD, int yD) {
-        this.xD = xD;
-        this.yD = yD;
-
         if (i == 0) {
             JLabel lblTit = new JLabel("Diagrama de clases");
             lblTit.setFont(new Font("Verdana", 1, 12));
@@ -88,8 +86,10 @@ public class Modelo {
     public void dibujarComposicion(int i, Vista d, ArrayList<clases> clases, ArrayList<String> nombres, Container cntDiagrama, int xD, int yD, int nClases) {
         this.xD = xD;
         this.yD = yD;
-        DiaComp com = new DiaComp();
-        com.dibujarComp(i, d, clases, nombres, cntDiagrama, xD, yD, nClases);
+        
+        com.get(cntComp).dibujarComp(i, d, clases, nombres, cntDiagrama, xD, yD, nClases);
+        
+        cntComp++;
     }
 
     /**

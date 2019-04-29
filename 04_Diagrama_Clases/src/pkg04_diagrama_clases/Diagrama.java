@@ -13,10 +13,9 @@ import javax.swing.JLabel;
  *
  * @author JQuintero
  */
-public class Diagrama  {
+public class Diagrama {
 
 }
-
 
 interface Agregacion {
 
