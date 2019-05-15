@@ -1,19 +1,15 @@
-package pkg04_diagrama_clases;
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+package pkg04.pkg1_diagrama_clases;
 
 /**
  *
- * @author <a href="https://github.com/JQuinteroC">JQuinteroC</a>
+ * @author JQuintero
  */
 public class Main {
 
+    /**
+     * @param args the command line arguments
+     */
     public static void main(String[] args) {
-        Modelo t = new Modelo();
         Vista f = new Vista();
         
         try {
@@ -27,8 +23,7 @@ public class Main {
             java.util.logging.Logger.getLogger(f.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         
-        Controlador u = new Controlador(f, t);
-        f.asignaOyentes(u);
         f.mostrar();
     }
+    
 }
